@@ -1,0 +1,724 @@
+--[[
+  JOSHBNS KEY SYSTEM & SCRIPT HUB (USERNAME WHITELISTED)
+--]]
+
+local CoreGui = game:GetService("CoreGui")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- ==========================================
+-- WHITELIST CONFIGURATION
+-- ==========================================
+local WHITELISTED_USERS = {
+    ["jeryl705"] = true,
+    -- Add more usernames here as needed:
+    -- ["nottheusualdomeng"] = true,
+    -- ["Jayviepogi111"] = true,
+}
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "JOSHBNS_STEAL_AN_EGG_HUB"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.DisplayOrder = 999999
+
+if syn and syn.protect_gui then
+    syn.protect_gui(ScreenGui)
+    ScreenGui.Parent = CoreGui
+elseif gethui then
+    ScreenGui.Parent = gethui()
+else
+    local success = pcall(function()
+        ScreenGui.Parent = CoreGui
+    end)
+    if not success then
+        ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+    end
+end
+
+-- ==========================================
+-- TERMINAL WHITELIST VERIFICATION UI
+-- ==========================================
+local KeySysFrame = Instance.new("Frame")
+KeySysFrame.Size = UDim2.fromOffset(450, 300)
+KeySysFrame.Position = UDim2.new(0.5, -225, 0.5, -150)
+KeySysFrame.BackgroundColor3 = Color3.fromRGB(15, 10, 25)
+KeySysFrame.BorderSizePixel = 0
+KeySysFrame.Active = true
+KeySysFrame.Draggable = true
+KeySysFrame.Parent = ScreenGui
+
+local KeySysCorner = Instance.new("UICorner")
+KeySysCorner.CornerRadius = UDim.new(0, 6)
+KeySysCorner.Parent = KeySysFrame
+
+local KeySysStroke = Instance.new("UIStroke")
+KeySysStroke.Color = Color3.fromRGB(140, 80, 220)
+KeySysStroke.Thickness = 1.5
+KeySysStroke.Parent = KeySysFrame
+
+local KeySysTitle = Instance.new("TextLabel")
+KeySysTitle.Size = UDim2.new(1, -20, 0, 30)
+KeySysTitle.Position = UDim2.new(0, 10, 0, 8)
+KeySysTitle.BackgroundTransparency = 1
+KeySysTitle.TextColor3 = Color3.fromRGB(180, 120, 255)
+KeySysTitle.Text = "JOSHBNS USERNAME WHITELIST SYSTEM"
+KeySysTitle.Font = Enum.Font.Code
+KeySysTitle.TextSize = 12
+KeySysTitle.TextXAlignment = Enum.TextXAlignment.Left
+KeySysTitle.Parent = KeySysFrame
+
+local TerminalLog = Instance.new("TextLabel")
+TerminalLog.Size = UDim2.new(1, -20, 0, 220)
+TerminalLog.Position = UDim2.new(0, 10, 0, 42)
+TerminalLog.BackgroundTransparency = 1
+TerminalLog.TextColor3 = Color3.fromRGB(200, 200, 220)
+TerminalLog.Text = ""
+TerminalLog.Font = Enum.Font.Code
+TerminalLog.TextSize = 11
+TerminalLog.TextXAlignment = Enum.TextXAlignment.Left
+TerminalLog.TextYAlignment = Enum.TextYAlignment.Top
+TerminalLog.TextWrapped = true
+TerminalLog.Parent = KeySysFrame
+
+-- Main Hub Frames (Hidden initially)
+local GameSelectFrame = Instance.new("Frame")
+GameSelectFrame.Size = UDim2.fromOffset(400, 260)
+GameSelectFrame.Position = UDim2.new(0.5, -200, 0.5, -130)
+GameSelectFrame.BackgroundColor3 = Color3.fromRGB(15, 25, 40)
+GameSelectFrame.BorderSizePixel = 0
+GameSelectFrame.Active = true
+GameSelectFrame.Draggable = true
+GameSelectFrame.Visible = false
+GameSelectFrame.Parent = ScreenGui
+
+local SelectCorner = Instance.new("UICorner")
+SelectCorner.CornerRadius = UDim.new(0, 8)
+SelectCorner.Parent = GameSelectFrame
+
+local SelectStroke = Instance.new("UIStroke")
+SelectStroke.Color = Color3.fromRGB(40, 130, 255)
+SelectStroke.Thickness = 1.8
+SelectStroke.Parent = GameSelectFrame
+
+local SelectTitleBar = Instance.new("Frame")
+SelectTitleBar.Size = UDim2.new(1, 0, 0, 32)
+SelectTitleBar.BackgroundColor3 = Color3.fromRGB(10, 18, 30)
+SelectTitleBar.BorderSizePixel = 0
+SelectTitleBar.Parent = GameSelectFrame
+
+local SelectTitleText = Instance.new("TextLabel")
+SelectTitleText.Size = UDim2.new(1, -30, 1, 0)
+SelectTitleText.Position = UDim2.new(0, 12, 0, 0)
+SelectTitleText.BackgroundTransparency = 1
+SelectTitleText.TextColor3 = Color3.fromRGB(100, 180, 255)
+SelectTitleText.Text = "JOSHBNS | SELECT GAME"
+SelectTitleText.Font = Enum.Font.FredokaOne
+SelectTitleText.TextSize = 11
+SelectTitleText.TextXAlignment = Enum.TextXAlignment.Left
+SelectTitleText.Parent = SelectTitleBar
+
+local SelectCloseBtn = Instance.new("TextButton")
+SelectCloseBtn.Size = UDim2.fromOffset(24, 24)
+SelectCloseBtn.Position = UDim2.new(1, -28, 0.5, -12)
+SelectCloseBtn.BackgroundTransparency = 1
+SelectCloseBtn.TextColor3 = Color3.fromRGB(160, 170, 185)
+SelectCloseBtn.Text = "✕"
+SelectCloseBtn.Font = Enum.Font.GothamBold
+SelectCloseBtn.TextSize = 12
+SelectCloseBtn.Parent = SelectTitleBar
+
+SelectCloseBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+local SelectContainer = Instance.new("Frame")
+SelectContainer.Size = UDim2.new(1, -24, 1, -56)
+SelectContainer.Position = UDim2.new(0, 12, 0, 44)
+SelectContainer.BackgroundTransparency = 1
+SelectContainer.Parent = GameSelectFrame
+
+local SelectLayout = Instance.new("UIListLayout")
+SelectLayout.SortOrder = Enum.SortOrder.LayoutOrder
+SelectLayout.Padding = UDim.new(0, 10)
+SelectLayout.Parent = SelectContainer
+
+local StealAnEggCard = Instance.new("TextButton")
+StealAnEggCard.Size = UDim2.new(1, 0, 0, 70)
+StealAnEggCard.BackgroundColor3 = Color3.fromRGB(20, 35, 55)
+StealAnEggCard.TextColor3 = Color3.fromRGB(255, 255, 255)
+StealAnEggCard.Text = ""
+StealAnEggCard.AutoButtonColor = false
+StealAnEggCard.Parent = SelectContainer
+
+local CardCorner = Instance.new("UICorner")
+CardCorner.CornerRadius = UDim.new(0, 6)
+CardCorner.Parent = StealAnEggCard
+
+local CardStroke = Instance.new("UIStroke")
+CardStroke.Color = Color3.fromRGB(40, 130, 255)
+CardStroke.Thickness = 1.2
+CardStroke.Parent = StealAnEggCard
+
+local CardTitle = Instance.new("TextLabel")
+CardTitle.Size = UDim2.new(1, -20, 0, 24)
+CardTitle.Position = UDim2.new(0, 10, 0, 10)
+CardTitle.BackgroundTransparency = 1
+CardTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+CardTitle.Text = "STEAL AN EGG"
+CardTitle.Font = Enum.Font.FredokaOne
+CardTitle.TextSize = 14
+CardTitle.TextXAlignment = Enum.TextXAlignment.Left
+CardTitle.Parent = StealAnEggCard
+
+local CardDesc = Instance.new("TextLabel")
+CardDesc.Size = UDim2.new(1, -20, 0, 20)
+CardDesc.Position = UDim2.new(0, 10, 0, 36)
+CardDesc.BackgroundTransparency = 1
+CardDesc.TextColor3 = Color3.fromRGB(160, 170, 185)
+CardDesc.Text = "Access all scripts, item spawners, shaders, and laggers."
+CardDesc.Font = Enum.Font.GothamMedium
+CardDesc.TextSize = 10
+CardDesc.TextXAlignment = Enum.TextXAlignment.Left
+CardDesc.Parent = StealAnEggCard
+
+-- Main Hub Frame Configuration
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.fromOffset(520, 360)
+MainFrame.Position = UDim2.new(0.5, -260, 0.5, -180)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 25, 40)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.ClipsDescendants = true
+MainFrame.Visible = false
+MainFrame.Parent = ScreenGui
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 8)
+MainCorner.Parent = MainFrame
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(40, 130, 255)
+UIStroke.Thickness = 1.8
+UIStroke.Parent = MainFrame
+
+local TitleBar = Instance.new("Frame")
+TitleBar.Size = UDim2.new(1, 0, 0, 32)
+TitleBar.BackgroundColor3 = Color3.fromRGB(10, 18, 30)
+TitleBar.BorderSizePixel = 0
+TitleBar.Parent = MainFrame
+
+local TitleText = Instance.new("TextLabel")
+TitleText.Size = UDim2.new(1, -60, 1, 0)
+TitleText.Position = UDim2.new(0, 12, 0, 0)
+TitleText.BackgroundTransparency = 1
+TitleText.TextColor3 = Color3.fromRGB(100, 180, 255)
+TitleText.Text = "JOSHBNS | PREMIUM v1.8.1.4"
+TitleText.Font = Enum.Font.FredokaOne
+TitleText.TextSize = 11
+TitleText.TextXAlignment = Enum.TextXAlignment.Left
+TitleText.Parent = TitleBar
+
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Size = UDim2.fromOffset(24, 24)
+CloseBtn.Position = UDim2.new(1, -28, 0.5, -12)
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.TextColor3 = Color3.fromRGB(160, 170, 185)
+CloseBtn.Text = "✕"
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.TextSize = 12
+CloseBtn.Parent = TitleBar
+
+local MinimizeBtn = Instance.new("TextButton")
+MinimizeBtn.Size = UDim2.fromOffset(24, 24)
+MinimizeBtn.Position = UDim2.new(1, -56, 0.5, -12)
+MinimizeBtn.BackgroundTransparency = 1
+MinimizeBtn.TextColor3 = Color3.fromRGB(160, 170, 185)
+MinimizeBtn.Text = "-"
+MinimizeBtn.Font = Enum.Font.GothamBold
+MinimizeBtn.TextSize = 14
+MinimizeBtn.Parent = TitleBar
+
+local ToggleButton = Instance.new("ImageButton")
+ToggleButton.Size = UDim2.fromOffset(56, 56)
+ToggleButton.Position = UDim2.new(0.02, 0, 0.35, 0)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(15, 25, 40)
+ToggleButton.Image = "rbxassetid://129348495818798"
+ToggleButton.Visible = false
+ToggleButton.Active = true
+ToggleButton.Draggable = true
+ToggleButton.Parent = ScreenGui
+
+local ToggleCorner = Instance.new("UICorner")
+ToggleCorner.CornerRadius = UDim.new(1, 0)
+ToggleCorner.Parent = ToggleButton
+
+local ToggleStroke = Instance.new("UIStroke")
+ToggleStroke.Color = Color3.fromRGB(40, 130, 255)
+ToggleStroke.Thickness = 1.8
+ToggleStroke.Parent = ToggleButton
+
+local Sidebar = Instance.new("Frame")
+Sidebar.Size = UDim2.new(0, 140, 1, -32)
+Sidebar.Position = UDim2.new(0, 0, 0, 32)
+Sidebar.BackgroundColor3 = Color3.fromRGB(12, 20, 32)
+Sidebar.BorderSizePixel = 0
+Sidebar.Parent = MainFrame
+
+local SidebarLayout = Instance.new("UIListLayout")
+SidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
+SidebarLayout.Padding = UDim.new(0, 4)
+SidebarLayout.Parent = Sidebar
+
+local SidebarPadding = Instance.new("UIPadding")
+SidebarPadding.PaddingTop = UDim.new(0, 8)
+SidebarPadding.PaddingLeft = UDim.new(0, 6)
+SidebarPadding.PaddingRight = UDim.new(0, 6)
+SidebarPadding.Parent = Sidebar
+
+local ContentContainer = Instance.new("Frame")
+ContentContainer.Size = UDim2.new(1, -140, 1, -32)
+ContentContainer.Position = UDim2.new(0, 140, 0, 32)
+ContentContainer.BackgroundTransparency = 1
+ContentContainer.Parent = MainFrame
+
+StealAnEggCard.MouseButton1Click:Connect(function()
+    GameSelectFrame.Visible = false
+    MainFrame.Visible = true
+end)
+
+local Tabs = {}
+local Pages = {}
+local activeTab = nil
+
+local function createTab(name, layoutOrder)
+    local TabButton = Instance.new("TextButton")
+    TabButton.Size = UDim2.new(1, 0, 0, 34)
+    TabButton.BackgroundColor3 = Color3.fromRGB(12, 20, 32)
+    TabButton.TextColor3 = Color3.fromRGB(140, 150, 165)
+    TabButton.Text = "  " .. name
+    TabButton.Font = Enum.Font.GothamMedium
+    TabButton.TextSize = 11
+    TabButton.TextXAlignment = Enum.TextXAlignment.Left
+    TabButton.LayoutOrder = layoutOrder
+    TabButton.Parent = Sidebar
+
+    local TabCorner = Instance.new("UICorner")
+    TabCorner.CornerRadius = UDim.new(0, 6)
+    TabCorner.Parent = TabButton
+
+    local Page = Instance.new("ScrollingFrame")
+    Page.Size = UDim2.new(1, 0, 1, 0)
+    Page.BackgroundTransparency = 1
+    Page.BorderSizePixel = 0
+    Page.CanvasSize = UDim2.new(0, 0, 0, 0)
+    Page.ScrollBarThickness = 3
+    Page.Visible = false
+    Page.Parent = ContentContainer
+
+    local PageLayout = Instance.new("UIListLayout")
+    PageLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    PageLayout.Padding = UDim.new(0, 6)
+    PageLayout.Parent = Page
+
+    local PagePadding = Instance.new("UIPadding")
+    PagePadding.PaddingTop = UDim.new(0, 10)
+    PagePadding.PaddingLeft = UDim.new(0, 10)
+    PagePadding.PaddingRight = UDim.new(0, 10)
+    PagePadding.Parent = Page
+
+    TabButton.MouseButton1Click:Connect(function()
+        for _, p in pairs(Pages) do p.Visible = false end
+        for _, t in pairs(Tabs) do 
+            t.BackgroundColor3 = Color3.fromRGB(12, 20, 32)
+            t.TextColor3 = Color3.fromRGB(140, 150, 165)
+        end
+        Page.Visible = true
+        TabButton.BackgroundColor3 = Color3.fromRGB(25, 45, 75)
+        TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    end)
+
+    Tabs[name] = TabButton
+    Pages[name] = Page
+
+    if not activeTab then
+        activeTab = name
+        Page.Visible = true
+        TabButton.BackgroundColor3 = Color3.fromRGB(25, 45, 75)
+        TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    end
+
+    return Page
+end
+
+local KeylessScroll = createTab("ALL KEYLESS", 1)
+KeylessScroll.CanvasSize = UDim2.new(0, 0, 0, 760)
+
+local WithKeyScroll = createTab("NEED KEY", 2)
+WithKeyScroll.CanvasSize = UDim2.new(0, 0, 0, 480)
+
+local ShaderScroll = createTab("SHADER", 3)
+ShaderScroll.CanvasSize = UDim2.new(0, 0, 0, 160)
+
+local PingLaggerScroll = createTab("PING LAGGER", 4)
+PingLaggerScroll.CanvasSize = UDim2.new(0, 0, 0, 160)
+
+local AnimationScroll = createTab("ANIMATION/EMOTE", 5)
+AnimationScroll.CanvasSize = UDim2.new(0, 0, 0, 120)
+
+local PromotersScroll = createTab("ALL PROMOTERS", 6)
+PromotersScroll.CanvasSize = UDim2.new(0, 0, 0, 140)
+
+local function addButton(parent, name, color, callback)
+    local Btn = Instance.new("TextButton")
+    Btn.Size = UDim2.new(1, 0, 0, 34)
+    Btn.BackgroundColor3 = color
+    Btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Btn.Text = name
+    Btn.Font = Enum.Font.GothamBold
+    Btn.TextSize = 10
+    Btn.Parent = parent
+    
+    local Corner = Instance.new("UICorner")
+    Corner.CornerRadius = UDim.new(0, 5)
+    Corner.Parent = Btn
+    
+    Btn.MouseButton1Click:Connect(function()
+        local tweenInfo = TweenInfo.new(0.06, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+        TweenService:Create(Btn, tweenInfo, {Size = UDim2.new(0.97, 0, 0, 30)}):Play()
+        task.wait(0.06)
+        TweenService:Create(Btn, tweenInfo, {Size = UDim2.new(1, 0, 0, 34)}):Play()
+        pcall(callback)
+    end)
+end
+
+-- Feature Buttons Setup
+addButton(KeylessScroll, "SENA KEYLESS", Color3.fromRGB(30, 110, 200), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/senarblx/sena/refs/heads/main/loader'))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "ANTI HIT KEYLESS", Color3.fromRGB(40, 90, 180), function()
+    task.spawn(function()
+        script_key = "Trial"
+        pcall(function() loadstring(game:HttpGet("https://api.getpolsec.com/scripts/hosted/6582551b42d21c6b7eb55f1d76d8d50ce53cb35592093d6615b5e83437594dc0.lua"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "BLYXO KEYLESS", Color3.fromRGB(20, 120, 220), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://flowauth.net/v1/loaders/69d3463240384f3a73fbe32c178093a2.lua"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "LKZ KEYLESS", Color3.fromRGB(50, 90, 210), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/65bf3459d87ba3ac46350e154b640929.lua"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "LOAD ON HUB KEYLESS", Color3.fromRGB(30, 140, 240), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/davizin713/ONhub/refs/heads/main/script.lua",true))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "LOAD ZN KEYLESS", Color3.fromRGB(40, 100, 190), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://zeroinhub.com/api/script"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "LOAD MIRANDA KEYLESS", Color3.fromRGB(60, 110, 220), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/miirandahub/loader/refs/heads/main/stealaeggs"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "LOAD BK KEYLESS", Color3.fromRGB(20, 100, 170), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/9ee4edde227ac85f50872bf9e4226508.lua"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "LOAD LENNON KEYLESS", Color3.fromRGB(35, 85, 200), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/chocolascript-glitch/LENNON-HUB-STEAL-AN-EGG/refs/heads/main/FREE-LEAKED"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "LOAD FOXNAME KEYLESS", Color3.fromRGB(50, 130, 230), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/caomod2077/Script/refs/heads/main/Fn-stealanegg.lua"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "LOAD HOSHI KEYLESS", Color3.fromRGB(25, 95, 185), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://hoshihub.site/loader.lua"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "LOAD DECODE KEYLESS", Color3.fromRGB(45, 140, 215), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/ItzYumi/Decode/refs/heads/main/DE%3ACODE.lua", true))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "LOAD AJJANS KEYLESS", Color3.fromRGB(30, 105, 195), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/36107afd3107e8d841f9d1a69e2465d4.lua"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "LOAD FAKE ADMIN KEYLESS", Color3.fromRGB(55, 80, 200), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/bf2eaf16a19664e333889d0b779b8a89.lua"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "Pet Spawner", Color3.fromRGB(25, 125, 210), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/chocolascript-glitch/Chocola-Pet-Spawner-steal-an-egg/refs/heads/main/script.lua"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "LOAD FAKE GIFT EGG KEYLESS", Color3.fromRGB(40, 115, 195), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/bbfc055ca9dcc305d6433cfffac95fe8.lua"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "LOAD FAKE TRADE KEYLESS", Color3.fromRGB(35, 130, 225), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://api.luarmor.net/files/v4/loaders/d8f1c691a58edb11ef782849f80e9b61.lua"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "PRIVATE SERVER BYPASS", Color3.fromRGB(50, 90, 170), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/raw-roblox/PrivateServerBypass/refs/heads/main/lua"))() end)
+    end)
+end)
+
+addButton(KeylessScroll, "LOAD OUROBOROS KEYLESS", Color3.fromRGB(20, 110, 195), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/joustingmatch/Ouroboros/main/loader.lua"))() end)
+    end)
+end)
+
+addButton(WithKeyScroll, "LOAD FYY WITH KEY", Color3.fromRGB(30, 110, 200), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://FyyCommunity.my.id"))() end)
+    end)
+end)
+
+addButton(WithKeyScroll, "LOAD CLOVER WITH KEY", Color3.fromRGB(40, 125, 210), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://cloverhub.app/clover.lua"))() end)
+    end)
+end)
+
+addButton(WithKeyScroll, "LOAD BF LOADER (WITH KEY)", Color3.fromRGB(50, 85, 195), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/hanniii1/Loader/refs/heads/main/BFLoader.lua"))() end)
+    end)
+end)
+
+addButton(WithKeyScroll, "LOAD SPEED HUB WITH KEY", Color3.fromRGB(20, 130, 230), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed%20Hub%20X.lua", true))() end)
+    end)
+end)
+
+addButton(WithKeyScroll, "LOAD NASI RENDANG WITH KEY", Color3.fromRGB(35, 100, 190), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/JualNasiRendang/loader/refs/heads/main/main.lua"))() end)
+    end)
+end)
+
+addButton(WithKeyScroll, "LOAD AIRFLOW WITH KEY", Color3.fromRGB(45, 115, 215), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://airflowscript.com/loader"))() end)
+    end)
+end)
+
+addButton(WithKeyScroll, "LOAD SPORTSCLUB WITH KEY", Color3.fromRGB(25, 120, 205), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://loader.sportsclub.fun/loader.luau"))() end)
+    end)
+end)
+
+addButton(WithKeyScroll, "LOAD OXIDE WITH KEY", Color3.fromRGB(55, 95, 180), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://pastefy.app/aIzaPmW9/raw"))() end)
+    end)
+end)
+
+addButton(WithKeyScroll, "LOAD CHIYO WITH KEY", Color3.fromRGB(30, 105, 210), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/kaisenlmao/loader/refs/heads/main/chiyo.lua"))() end)
+    end)
+end)
+
+addButton(WithKeyScroll, "LOAD OMG WITH KEY", Color3.fromRGB(40, 90, 195), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/Omgshit/Scripts/main/MainLoader.lua"))() end)
+    end)
+end)
+
+addButton(WithKeyScroll, "LOAD SNOWY WITH KEY", Color3.fromRGB(20, 125, 220), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://flowauth.net/v1/ui/a87f00d9adf63658655fcd02ab86a4ef.lua"))() end)
+    end)
+end)
+
+addButton(WithKeyScroll, "LOAD SOLIX WITH KEY", Color3.fromRGB(35, 110, 205), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://raw.githubusercontent.com/bao8jl/solixhub/main/loader"))() end)
+    end)
+end)
+
+addButton(ShaderScroll, "KEYLESS SHADER", Color3.fromRGB(30, 95, 195), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet('https://raw.githubusercontent.com/randomstring0/pshade-ultimate/refs/heads/main/src/cd.lua'))() end)
+    end)
+end)
+
+addButton(ShaderScroll, "KEYLESS SHADER V1", Color3.fromRGB(45, 120, 220), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Simple-Shader-37434"))() end)
+    end)
+end)
+
+addButton(PingLaggerScroll, "RIFT LAGGER V1 KEYLESS", Color3.fromRGB(40, 100, 200), function()
+    task.spawn(function()
+        script_key = "trial"
+        pcall(function() loadstring(game:HttpGet("https://api.getpolsec.com/scripts/hosted/54a45ce90e56387bfc6957d4ff82ef9602ad501d94be449722c82047286265a2.lua"))() end)
+    end)
+end)
+
+addButton(PingLaggerScroll, "RIFT LAGGER V2 KEYLESS", Color3.fromRGB(25, 115, 215), function()
+    task.spawn(function()
+        script_key = "trial"
+        pcall(function() loadstring(game:HttpGet("https://api.getpolsec.com/scripts/hosted/bdfe11b74cf289f8e42386e53965f1d9bbd24f7d0f3d353df2315487c90fd2d3.lua"))() end)
+    end)
+end)
+
+addButton(AnimationScroll, "Animation keyless", Color3.fromRGB(35, 110, 210), function()
+    task.spawn(function()
+        pcall(function() loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-7yd7-I-Emote-Script-48024"))() end)
+    end)
+end)
+
+local promotersList = {
+    "@yuzuke413",
+    "@its.shadow18",
+    "@joshbnsssnganiiiii"
+}
+
+for _, handle in ipairs(promotersList) do
+    local PromotorCard = Instance.new("Frame")
+    PromotorCard.Size = UDim2.new(1, 0, 0, 36)
+    PromotorCard.BackgroundColor3 = Color3.fromRGB(20, 35, 55)
+    PromotorCard.Parent = PromotersScroll
+
+    local CardCorner = Instance.new("UICorner")
+    CardCorner.CornerRadius = UDim.new(0, 5)
+    CardCorner.Parent = PromotorCard
+
+    local TextLabel = Instance.new("TextLabel")
+    TextLabel.Size = UDim2.new(1, -70, 1, 0)
+    TextLabel.Position = UDim2.new(0, 10, 0, 0)
+    TextLabel.BackgroundTransparency = 1
+    TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TextLabel.Text = handle
+    TextLabel.Font = Enum.Font.GothamBold
+    TextLabel.TextSize = 11
+    TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TextLabel.Parent = PromotorCard
+
+    local CopyBtn = Instance.new("TextButton")
+    CopyBtn.Size = UDim2.fromOffset(56, 24)
+    CopyBtn.Position = UDim2.new(1, -62, 0.5, -12)
+    CopyBtn.BackgroundColor3 = Color3.fromRGB(40, 130, 255)
+    CopyBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    CopyBtn.Text = "COPY"
+    CopyBtn.Font = Enum.Font.GothamBold
+    CopyBtn.TextSize = 9
+    CopyBtn.Parent = PromotorCard
+
+    local CopyCorner = Instance.new("UICorner")
+    CopyCorner.CornerRadius = UDim.new(0, 4)
+    CopyCorner.Parent = CopyBtn
+
+    CopyBtn.MouseButton1Click:Connect(function()
+        if setclipboard then
+            setclipboard(handle)
+        end
+        CopyBtn.Text = "COPIED!"
+        task.wait(1)
+        CopyBtn.Text = "COPY"
+    end)
+end
+
+local function toggleUI()
+    if MainFrame.Visible or GameSelectFrame.Visible then
+        MainFrame.Visible = false
+        GameSelectFrame.Visible = false
+        ToggleButton.Visible = true
+    else
+        MainFrame.Visible = true
+        GameSelectFrame.Visible = false
+        ToggleButton.Visible = false
+    end
+end
+
+MinimizeBtn.MouseButton1Click:Connect(toggleUI)
+CloseBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+ToggleButton.MouseButton1Click:Connect(toggleUI)
+
+UserInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == Enum.KeyCode.Insert then
+        toggleUI()
+    end
+end)
+
+-- ==========================================
+-- AUTOMATIC WHITELIST CHECK (jeryl705)
+-- ==========================================
+task.spawn(function()
+    TerminalLog.Text = "Scanning environment..."
+    task.wait(0.6)
+    TerminalLog.Text = TerminalLog.Text .. "\n[+] Target User: " .. LocalPlayer.Name .. " (" .. tostring(LocalPlayer.UserId) .. ")"
+    task.wait(0.8)
+    TerminalLog.Text = TerminalLog.Text .. "\n[*] Checking Whitelist Database..."
+    task.wait(0.8)
+    
+    local targetNameLower = string.lower(LocalPlayer.Name)
+    local isWhitelisted = false
+    
+    for username, _ in pairs(WHITELISTED_USERS) do
+        if string.lower(username) == targetNameLower then
+            isWhitelisted = true
+            break
+        end
+    end
+    
+    if isWhitelisted then
+        TerminalLog.Text = TerminalLog.Text .. "\n[+] Access Granted! Welcome, " .. LocalPlayer.Name .. "."
+        task.wait(1.2)
+        KeySysFrame:Destroy()
+        GameSelectFrame.Visible = true
+    else
+        TerminalLog.Text = TerminalLog.Text .. "\n[!] ACCESS DENIED: User not whitelisted!"
+        task.wait(2.5)
+        ScreenGui:Destroy()
+    end
+end)
+
