@@ -15,7 +15,7 @@ local WHITELISTED_USERS = {
     ["jeryl705"] = true,
     -- Add more usernames here as needed:
     -- ["nottheusualdomeng"] = true,
-    -- ["Jayviepogi1112"] = true,
+    -- ["jayviepogi1112"] = true,
     -- ["yuzuke12329"] = true,
 }
 
